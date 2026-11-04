@@ -5,7 +5,7 @@
 A simple weighted wheel of fortune with a `tkinter` GUI, elimination mode, and convenient bulk import.
 Python 3.10+ (tested on 3.14), no third-party dependencies.
 
-![Screenshot of the wheel app](doc\screenshot.jpg)
+![Screenshot of the wheel app](doc/screenshot.jpg)
 
 ## Launch
 
