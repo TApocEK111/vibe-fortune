@@ -359,6 +359,7 @@ class WheelApp(tk.Tk):
         self._original_options: list[Option] = []
         self._spinning = False
         self._angle = 0.0
+        self._timer_left: float = 0.0
 
         self._build_ui()
 
@@ -574,6 +575,7 @@ class WheelApp(tk.Tk):
         self._spin_delta = delta
         self._spin_t0 = time.perf_counter()
         self._spin_duration = duration
+        self._timer_left = duration
 
         self._animate()
 
@@ -584,6 +586,7 @@ class WheelApp(tk.Tk):
         p = min(1.0, t / self._spin_duration)
         eased = 1.0 - (1.0 - p) ** 3
         self._angle = self._spin_start + self._spin_delta * eased
+        self._timer_left = max(0.0, self._spin_duration - t)
         self._draw()
         if p < 1.0:
             self.after(16, self._animate)
@@ -592,6 +595,7 @@ class WheelApp(tk.Tk):
 
     def _finish_spin(self) -> None:
         self._spinning = False
+        self._timer_left = 0.0
         self._angle = (self._spin_start + self._spin_delta) % 360.0
         self._draw()
 
@@ -621,7 +625,7 @@ class WheelApp(tk.Tk):
             return
 
         cx, cy = w / 2, h / 2
-        r = min(w, h) / 2 - 30
+        r = min(w, h) / 2 - 60
         if r <= 0:
             return
 
@@ -630,6 +634,17 @@ class WheelApp(tk.Tk):
             c.create_text(cx, cy, text="Нет вариантов",
                           fill=FG, font=("Segoe UI", 16))
             return
+            # ---- обратный отсчёт над колесом ----
+        if self._spinning:
+            top_y = cy - r - 50
+            txt = f"{self._timer_left:0.1f} с"
+            c.create_text(cx + 2, top_y + 2, text=txt,
+                            fill="#0d0f14",
+                            font=("Segoe UI", 22, "bold"))
+            c.create_text(cx, top_y, text=txt,
+                            fill=ACCENT,
+                            font=("Segoe UI", 22, "bold"))
+
 
         rot = self._angle
 
