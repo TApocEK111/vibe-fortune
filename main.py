@@ -492,6 +492,7 @@ class WheelApp(tk.Tk):
         self._angle = 0.0
         self._timer_left: float = 0.0
         self._last_options: list[Option] | None = None
+        self.title(tr("app_title", self.lang))
 
         self._build_ui()
 
